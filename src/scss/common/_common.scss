@@ -1,0 +1,38 @@
+/* 主色 */
+$mc: #f00;
+
+/* 文字色 */
+$tc: #333;
+
+/* 边线颜色 */
+$bc: #e8e8e8;
+
+/* 浅灰色背景 */
+$bgc: #f5f5f5;
+
+/* 内容宽度 */
+$fw: 1100px;
+
+/* 边框 */
+@mixin border($c, $dir: 'bottom'){
+	border-#{$dir}: 1px solid $c;
+}
+
+
+/* 相对于父元素绝对定位并设置左右上下距离 */
+@mixin position($left: 0, $right: 0, $top: 0, $bottom: 0) {
+	position: absolute;
+	left: $left;
+	right: $right;
+	top: $top;
+	bottom: $bottom;
+}
+
+/* 多行截取 */
+@mixin lineClamp($line: 2) {
+	overflow : hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: $line;
+	-webkit-box-orient: vertical;
+}

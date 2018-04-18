@@ -1,0 +1,14 @@
+@import "_common.scss";
+
+.app-footer-wrap {
+	min-width: $fw;
+	background: $bgc;
+	padding: 30px 0;
+}
+
+.app-footer {
+	width: $fw;
+	margin: 0 auto;
+	text-align: center;
+	color: #999;
+}

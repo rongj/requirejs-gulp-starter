@@ -1,0 +1,92 @@
+@import "_common.scss";
+
+/* 顶部高度 */
+$h_th: 60px;
+
+/* 顶部行高 */
+$h_lh: 40px;
+
+/* 距离顶部高度 */
+$h_mt: ($h_th - $h_lh)/2;
+
+/* 顶部样式 */
+.app-header-wrap {
+	min-width: $fw;
+	height: $h_th;
+	background: #fff;
+	@include border($bc);
+	box-shadow: 0 2px 20px $bc;
+}
+
+.app-header {
+	width: $fw;
+	margin: 0 auto;
+}
+
+.header-logo {
+	display: block;
+	width: 100px;
+	height: $h_lh;
+	line-height: $h_lh;
+	margin-top: $h_mt;
+	background-color: lighten($mc, 46%);
+	text-align: center;
+	margin-right: 20px;
+	img {
+		height: 80%;
+	}
+}
+
+.header-nav {
+	margin-top: $h_mt;
+	li {
+		float: left;
+		line-height: $h_lh;
+		margin: 0 20px;
+		font-size: 16px;
+		a {
+			display: block;
+		}
+		&.active,
+		&:hover {
+			a {
+				color: $mc;
+			}
+		}
+	}
+}
+
+.header-login, 
+.header-unlogin {
+	display: none;
+}
+.header-unlogin,
+.header-login {
+	display: block;
+	margin-top: ($h_th - 30)/2;
+	a {
+		display: block;
+		float: left;
+		width: 60px;
+		text-align: center;
+		border-radius: 4px;
+		height: 30px;
+		line-height: 30px;
+		font-size: 14px;
+		margin-left: 10px;
+		border: 1px solid $mc;
+		transition: all .3s;
+		&:hover {
+			color: #fff;
+			background: $mc;
+		}
+	}
+}
+.header-login {
+	display: none;
+	span {
+		float: left;
+		line-height: 30px;
+		font-size: 14px;
+	}
+}

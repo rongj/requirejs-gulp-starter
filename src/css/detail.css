@@ -1,0 +1,123 @@
+@charset "UTF-8";
+/* 主色 */
+/* 文字色 */
+/* 边线颜色 */
+/* 浅灰色背景 */
+/* 内容宽度 */
+/* 边框 */
+/* 相对于父元素绝对定位并设置左右上下距离 */
+/* 多行截取 */
+/* 主色 */
+/* 文字色 */
+/* 边线颜色 */
+/* 浅灰色背景 */
+/* 内容宽度 */
+/* 边框 */
+/* 相对于父元素绝对定位并设置左右上下距离 */
+/* 多行截取 */
+/* 顶部高度 */
+/* 顶部行高 */
+/* 距离顶部高度 */
+/* 顶部样式 */
+.app-header-wrap {
+  min-width: 1100px;
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  -webkit-box-shadow: 0 2px 20px #e8e8e8;
+          box-shadow: 0 2px 20px #e8e8e8; }
+
+.app-header {
+  width: 1100px;
+  margin: 0 auto; }
+
+.header-logo {
+  display: block;
+  width: 100px;
+  height: 40px;
+  line-height: 40px;
+  margin-top: 10px;
+  background-color: #ffebeb;
+  text-align: center;
+  margin-right: 20px; }
+  .header-logo img {
+    height: 80%; }
+
+.header-nav {
+  margin-top: 10px; }
+  .header-nav li {
+    float: left;
+    line-height: 40px;
+    margin: 0 20px;
+    font-size: 16px; }
+    .header-nav li a {
+      display: block; }
+    .header-nav li.active a, .header-nav li:hover a {
+      color: #f00; }
+
+.header-login,
+.header-unlogin {
+  display: none; }
+
+.header-unlogin,
+.header-login {
+  display: block;
+  margin-top: 15px; }
+  .header-unlogin a,
+  .header-login a {
+    display: block;
+    float: left;
+    width: 60px;
+    text-align: center;
+    -webkit-border-radius: 4px;
+            border-radius: 4px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    margin-left: 10px;
+    border: 1px solid #f00;
+    -webkit-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s; }
+    .header-unlogin a:hover,
+    .header-login a:hover {
+      color: #fff;
+      background: #f00; }
+
+.header-login {
+  display: none; }
+  .header-login span {
+    float: left;
+    line-height: 30px;
+    font-size: 14px; }
+
+/* 主色 */
+/* 文字色 */
+/* 边线颜色 */
+/* 浅灰色背景 */
+/* 内容宽度 */
+/* 边框 */
+/* 相对于父元素绝对定位并设置左右上下距离 */
+/* 多行截取 */
+.app-footer-wrap {
+  min-width: 1100px;
+  background: #f5f5f5;
+  padding: 30px 0; }
+
+.app-footer {
+  width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  color: #999; }
+
+/* 内容区 */
+.main-content {
+  width: 1100px;
+  margin: 20px auto;
+  height: 800px; }
+
+#test {
+  color: #f00;
+  padding: 10px;
+  margin: 20px 0;
+  border: 1px solid #e8e8e8; }

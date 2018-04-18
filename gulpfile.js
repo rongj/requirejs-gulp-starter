@@ -18,7 +18,12 @@ var gulp = require('gulp'),
 	browserSync = require("browser-sync").create(),
 	gulpsync = require('gulp-sync')(gulp);
 
+// 打包项目目录
 var __path = '/';
+
+// 上线静态资源路径
+var abspath = '';
+// var abspath = 'http://localhost/frontend-generator/dist/';
 
  //将类style-b47bb72002.css修改为style.css?v=b47bb72002
 function fixHash() {
@@ -45,8 +50,13 @@ gulp.task('html', function () {
         minifyJS: true,//压缩页面JS
         minifyCSS: true//压缩页面CSS
     };
+    let jsreg = new RegExp(/(src|data-main)="(.*?)js\/(page|lib)\/?/g);
+    let cssreg = new RegExp(/href=\"(.*?)css\//g);
 	return gulp.src('src/'+__path+'*.html')
 		.pipe(htmlmin(options))
+		.pipe(replace('<script src="js/common/config.js"></script>', ''))   // 打包去掉configjs引用
+		.pipe(replace(cssreg, 'href="'+abspath+'css/'))   // 替换css引用路径
+		.pipe(replace(/(data-main|src)=\"js\/(page|lib)\/?/g, '$1="'+abspath+'js/'))   // 替换js引用路径
 		.pipe(gulp.dest('dist/'+__path))
 })
 

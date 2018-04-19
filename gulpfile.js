@@ -20,7 +20,7 @@ var gulp = require('gulp'),
 	gulpsync = require('gulp-sync')(gulp);
 
 // 打包项目目录
-var __path = '/';
+var __path = 'project_03/';
 
 // 上线静态资源路径
 var abspath = '';
@@ -51,19 +51,20 @@ gulp.task('html', function () {
         minifyJS: true,//压缩页面JS
         minifyCSS: true//压缩页面CSS
     };
-    let jsreg = new RegExp(/(src|data-main)="(.*?)js\/(page|lib)\/?/g);
+    let reg = new RegExp(/<script src="(.*?)js\/common\/config.js"><\/script>/g);
+    let jsreg = new RegExp(/(data-main|src)=\"(.*?)js\/(page|lib|common)\/?/g);
     let cssreg = new RegExp(/href=\"(.*?)css\//g);
 	return gulp.src('src/'+__path+'*.html')
 		.pipe(htmlmin(options))
-		.pipe(replace('<script src="js/common/config.js"></script>', ''))   // 打包去掉configjs引用
+		.pipe(replace(reg, ''))   // 打包去掉configjs引用
 		.pipe(replace(cssreg, 'href="'+abspath+'css/'))   // 替换css引用路径
-		.pipe(replace(/(data-main|src)=\"js\/(page|lib)\/?/g, '$1="'+abspath+'js/'))   // 替换js引用路径
+		.pipe(replace(jsreg, '$1="'+abspath+'js/'))   // 替换js引用路径
 		.pipe(gulp.dest('dist/'+__path))
 })
 
 // 样式
 gulp.task('scss', function () {
-	gulp.src(['src/'+__path+'scss/page/*.scss', 'src/'+__path+'scss/common/*.scss'])
+	gulp.src(['src/'+__path+'scss/*.scss'])
 		.pipe(sass({ style: 'expanded' }))
 		.pipe(autoprefixer('last 10 version', 'safari 5', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulp.dest('src/'+__path+'css'))
@@ -76,7 +77,7 @@ gulp.task('scss', function () {
 });
 
 gulp.task('css', ['scss'], function () {
-	return gulp.src(['src/'+__path+'scss/page/*.css'])
+	return gulp.src(['src/'+__path+'scss/*.css'])
 		.pipe(autoprefixer('last 10 version', 'safari 5', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(minifycss())
 		.pipe(gulp.dest('dist/'+__path+'css'))
@@ -86,7 +87,7 @@ gulp.task('css', ['scss'], function () {
 gulp.task('devscss', function () {
 	return new Promise(function (resolve, reject) {
 		return setTimeout(function () {
-			return gulp.src(['src/'+__path+'/scss/page/*.scss', 'src/'+__path+'scss/common/*.scss'])
+			return gulp.src(['src/'+__path+'/scss/*.scss'])
 				.pipe(sass({ style: 'expanded' }))
 				.pipe(autoprefixer('last 10 version', 'safari 5', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 				.on('error', function(e) {
@@ -102,7 +103,7 @@ gulp.task('devscss', function () {
 });
 
 gulp.task('devcss', ['devscss'], function () {
-	return gulp.src(['src/'+__path+'/scss/page/*.css'])
+	return gulp.src(['src/'+__path+'/scss/*.css'])
 		.pipe(autoprefixer('last 10 version', 'safari 5', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulp.dest('src/'+__path+'css'))
 });
@@ -113,7 +114,7 @@ gulp.task('devimg', function() {
 		.pipe(spritesmith({  
             imgName: 'icons.png',
             imgName: '../images/icons.png',
-            cssName: '/src/scss/common/_sprite.scss', 
+            cssName: '/'+__path+'/scss/_sprite.scss', 
             cssFormat: 'css',
             cssVarMap: function (sprite) {
             	// 将图片名含-hover的转化为hover属性
@@ -128,16 +129,13 @@ gulp.task('devimg', function() {
 // 脚本
 gulp.task('js', function () {
 	// js复制
-	gulp.src(['src/'+__path+'js/lib/require.js'])
+	gulp.src(['src/public/js/lib/require.js'])
 		.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest('dist/'+__path+'js'))
 
 	// js合并压缩
-	gulp.src(['src/'+__path+'js/page/*.js'])
-		.pipe(requirejsOptimize({
-	        optimize: 'none',
-	        mainConfigFile: 'src/js/common/config.js',
-	    }))
+	return gulp.src(['src/'+__path+'js/page/*.js', 'src/'+__path+'js/common/*.js'])
+		.pipe(isRequirejs())
 		.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest('dist/'+__path+'js'))
 		.pipe(rev())
@@ -146,6 +144,20 @@ gulp.task('js', function () {
 		.pipe(gulp.dest('src/'+__path+'rev/js'))
 })
 
+// 如果是requrejs则合并依赖
+function isRequirejs() {
+    return through.obj(function (file, enc, cb) {
+        let str = file.contents.toString();
+        if(str.indexOf('require([') !== -1) {
+        	requirejsOptimize({
+		        optimize: 'none',
+		        mainConfigFile: 'src/public/js/common/config.js',
+		    })
+        }
+        return cb(null, file);
+    });
+}
+
 
 // 图片
 gulp.task('img', function() { 
@@ -153,7 +165,7 @@ gulp.task('img', function() {
 		.pipe(spritesmith({  
             imgName: 'icons.png',  
             imgPath: '../images/icons.png',
-            cssName: '/src/scss/common/_sprite.scss', 
+            cssName: '/'+__path+'/scss/_sprite.scss', 
             cssFormat: 'css',
             cssVarMap: function (sprite) {
                 sprite.name = sprite.name.replace('-hover', ':hover');
@@ -203,10 +215,10 @@ function replaceHash(filename) {
 gulp.task('watch', function () {
 
 	// 监视所有.scss文件改动
-	gulp.watch('src/'+__path+'/scss/*/*.scss', ['devscss']);
+	gulp.watch('src/'+__path+'/scss/*.scss', ['devscss']);
 
 	// 监视所有.css文件改动
-	gulp.watch('src/'+__path+'/scss/*/*.css', ['devcss']);
+	gulp.watch('src/'+__path+'/scss/*.css', ['devcss']);
 
 	// 监视图标文件改动
 	gulp.watch('src/'+__path+'/images/icons/', ['devimg']);

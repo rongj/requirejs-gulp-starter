@@ -1,0 +1,44 @@
+@import "../../public/scss/_common.scss";
+@import "../../public/scss/_header.scss";
+@import "../../public/scss/_footer.scss";
+@import "_sprite.scss";
+
+
+/* 内容区 */
+.main-content {
+	width: $fw;
+	margin: 20px auto;
+	height: 800px;
+}
+
+.main-content h3 {
+	margin-top: 30px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.test-btns {
+	font-size: 0;
+	span {
+		display: inline-block;
+		height: 30px;
+		line-height: 30px;
+		margin: 10px;
+		margin-left: 0;
+		padding: 0 20px;
+		font-size: 14px;
+		cursor: pointer;
+		background: lighten($mc, 20%);
+		color: #fff;
+		&:hover {
+			background: $mc;
+		}
+	}
+}
+
+#test {
+	color: $mc;
+	padding: 10px;
+	margin: 20px 0;
+	border: 1px solid $bc;
+}

@@ -1,0 +1,19 @@
+@import "../../public/scss/_common.scss";
+@import "../../public/scss/_header.scss";
+@import "../../public/scss/_footer.scss";
+
+
+/* 内容区 */
+.main-content {
+	width: $fw;
+	margin: 20px auto;
+	height: 800px;
+}
+
+
+#test {
+	color: $mc;
+	padding: 10px;
+	margin: 20px 0;
+	border: 1px solid $bc;
+}

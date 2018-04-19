@@ -1,4 +1,4 @@
-# 基于require开发gulp打包的demo
+# 使用requirejs开发gulp打包的demo
 
 ### 项目结构
 ```

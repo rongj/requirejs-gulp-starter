@@ -24,7 +24,7 @@ var __path = '/';
 
 // 上线静态资源路径
 var abspath = '';
-// var abspath = '//www.xxx.com';
+// var abspath = '//www.xxx.com/';
 
  //将类style-b47bb72002.css修改为style.css?v=b47bb72002
 function fixHash() {
@@ -163,7 +163,7 @@ gulp.task('img', function() {
         }))
 		.pipe(gulp.dest('src/'+__path+'images'))
 
-	return gulp.src(['src/'+__path+'images/**', '!src/'+__path+'images/icons'])
+	return gulp.src(['src/'+__path+'images/**', '!src/'+__path+'images/icons/*', '!src/'+__path+'images/icons'])
 		.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		.pipe(gulp.dest('dist/'+__path+'images'))
 });

@@ -1,14 +1,14 @@
 {
-  "name": "frontend-generator",
+  "name": "requirejs-gulp-starter",
   "version": "1.0.0",
-  "description": "前端多页面脚手架",
+  "description": "a demo build width requirejs and gulp",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rongj/frontend-generator.git"
+    "url": "https://github.com/rongj/requirejs-gulp-starter.git"
   },
   "author": "rongj",
   "license": "ISC",

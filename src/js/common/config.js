@@ -11,8 +11,7 @@ var require = {
         'a': '../common/a',
         'b': '../common/b',
         'c': '../common/c',
-    },
-    shim: {}
+    }
 };
 
 if(typeof module === "object" && typeof module.exports === 'object'){

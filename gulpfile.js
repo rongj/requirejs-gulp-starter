@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	minifycss = require('gulp-minify-css'),
 	htmlmin = require('gulp-htmlmin'),
 	imagemin = require('gulp-imagemin'),
+	spritesmith = require('gulp.spritesmith'),
 	rename = require('gulp-rename'),
 	uglify = require('gulp-uglify'),
 	notify = require('gulp-notify'),
@@ -23,7 +24,7 @@ var __path = '/';
 
 // 上线静态资源路径
 var abspath = '';
-// var abspath = 'http://localhost/frontend-generator/dist/';
+// var abspath = '//www.xxx.com';
 
  //将类style-b47bb72002.css修改为style.css?v=b47bb72002
 function fixHash() {
@@ -91,7 +92,7 @@ gulp.task('devscss', function () {
 				.on('error', function(e) {
 				    return reject(e) && this.end();
 				})
-				.pipe(minifycss())
+				// .pipe(minifycss())
 				.pipe(gulp.dest('src/'+__path+'css'))
 				.on('end', resolve)
 		}, 500)
@@ -106,6 +107,23 @@ gulp.task('devcss', ['devscss'], function () {
 		.pipe(gulp.dest('src/'+__path+'css'))
 });
 
+// 开发环境图片
+gulp.task('devimg', function() { 
+	gulp.src('src/'+__path+'images/icons/*')
+		.pipe(spritesmith({  
+            imgName: 'icons.png',
+            imgName: '../images/icons.png',
+            cssName: '/src/scss/common/_sprite.scss', 
+            cssFormat: 'css',
+            cssVarMap: function (sprite) {
+            	// 将图片名含-hover的转化为hover属性
+                sprite.name = sprite.name.replace('-hover', ':hover');
+            },
+            padding: 5,  
+            algorithm: 'binary-tree'  
+        }))
+		.pipe(gulp.dest('src/'+__path+'images'))
+});
 
 // 脚本
 gulp.task('js', function () {
@@ -131,7 +149,21 @@ gulp.task('js', function () {
 
 // 图片
 gulp.task('img', function() { 
-	return gulp.src('src/'+__path+'images/**')
+	gulp.src('src/'+__path+'images/icons/*')
+		.pipe(spritesmith({  
+            imgName: 'icons.png',  
+            imgPath: '../images/icons.png',
+            cssName: '/src/scss/common/_sprite.scss', 
+            cssFormat: 'css',
+            cssVarMap: function (sprite) {
+                sprite.name = sprite.name.replace('-hover', ':hover');
+            },
+            padding: 5,  
+            algorithm: 'binary-tree'  
+        }))
+		.pipe(gulp.dest('src/'+__path+'images'))
+
+	return gulp.src(['src/'+__path+'images/**', '!src/'+__path+'images/icons'])
 		.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		.pipe(gulp.dest('dist/'+__path+'images'))
 });
@@ -146,7 +178,7 @@ gulp.task('clean', function () {
 
 // 版本
 gulp.task('rev', function () {
-	gulp.src(['dist/'+__path+'*.html'])
+	return gulp.src(['dist/'+__path+'*.html'])
 		.pipe(replaceHash('src/'+__path+'rev/css/rev-manifest.json'))
 		.pipe(replaceHash('src/'+__path+'rev/js/rev-manifest.json'))
         .pipe(gulp.dest('dist/'+__path))
@@ -175,6 +207,9 @@ gulp.task('watch', function () {
 
 	// 监视所有.css文件改动
 	gulp.watch('src/'+__path+'/scss/*/*.css', ['devcss']);
+
+	// 监视图标文件改动
+	gulp.watch('src/'+__path+'/images/icons/', ['devimg']);
 	
 	// 监视所有位在src目录下的文件，一旦有更动，便进行重整
 	gulp.watch(['src/'+__path+'*']).on('change', browserSync.reload);
@@ -182,7 +217,7 @@ gulp.task('watch', function () {
 
 
 // 开发环境
-gulp.task('dev', gulpsync.sync([['devscss', 'devcss'], 'watch']), function(){
+gulp.task('dev', gulpsync.sync([['devscss', 'devcss', 'devimg'], 'watch']), function(){
 	// 开启热更新服务
 	// browserSync.init({
 	// 	server: "./src"

@@ -1,0 +1,1 @@
+require(["jquery","login","common_01"],function($,Login){"use strict";var login=new Login;({init:function(){this.interActive()},interActive:function(){$(".btn-login").on("click",function(e){e.preventDefault(),login.show({success:function(d){d.name&&$(".header-login").find("span").html("欢迎你，"+d.name).end().show().siblings(".header-unlogin").hide()}})})}}).init()});

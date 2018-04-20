@@ -55,9 +55,9 @@ gulp.task('html', function () {
     let cssreg = new RegExp(/href=\"(.*?)css\//g);
 	return gulp.src('src/'+__path+'*.html')
 		.pipe(htmlmin(options))
-		.pipe(replace('<script src="js/common/config.js"></script>', ''))   // 打包去掉configjs引用
+		// .pipe(replace('<script src="js/common/config.js"></script>', ''))   // 打包去掉configjs引用
 		.pipe(replace(cssreg, 'href="'+abspath+'css/'))   // 替换css引用路径
-		.pipe(replace(/(data-main|src)=\"js\/(page|lib)\/?/g, '$1="'+abspath+'js/'))   // 替换js引用路径
+		.pipe(replace(/(data-main|src)=\"js\//g, '$1="'+abspath+'js/'))   // 替换js引用路径
 		.pipe(gulp.dest('dist/'+__path))
 })
 
@@ -127,17 +127,13 @@ gulp.task('devimg', function() {
 
 // 脚本
 gulp.task('js', function () {
-	// js复制
-	gulp.src(['src/'+__path+'js/lib/require.js'])
-		.pipe(uglify({ mangle: false }))
-		.pipe(gulp.dest('dist/'+__path+'js'))
+	// gulp.src(['src/'+__path+'js/lib/config.js'])
+	// 	.pipe(uglify())
+	// 	// .pipe(replace('baseUrl:"js"','baseUrl:"//m.mop.com/mnl/js"'))
+	// 	.pipe(gulp.dest('dist/'+__path+'js/lib'))
 
-	// js合并压缩
-	gulp.src(['src/'+__path+'js/page/*.js'])
-		.pipe(requirejsOptimize({
-	        optimize: 'none',
-	        mainConfigFile: 'src/js/common/config.js',
-	    }))
+	// js压缩
+	gulp.src(['src/'+__path+'js/**/*.js'])
 		.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest('dist/'+__path+'js'))
 		.pipe(rev())
@@ -178,6 +174,10 @@ gulp.task('clean', function () {
 
 // 版本
 gulp.task('rev', function () {
+	gulp.src(['dist/'+__path+'js/common/config.js'])
+		.pipe(replaceHash('src/'+__path+'rev/js/rev-manifest.json'))
+	    .pipe(gulp.dest('dist/'+__path+'js/common'))
+
 	return gulp.src(['dist/'+__path+'*.html'])
 		.pipe(replaceHash('src/'+__path+'rev/css/rev-manifest.json'))
 		.pipe(replaceHash('src/'+__path+'rev/js/rev-manifest.json'))

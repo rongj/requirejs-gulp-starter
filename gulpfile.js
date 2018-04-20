@@ -16,15 +16,27 @@ var gulp = require('gulp'),
 	requirejsOptimize = require('gulp-requirejs-optimize'),
 	through = require('through2'),
 	fs = require('fs'),
+	gulpif = require('gulp-if'),
+	minimist = require('minimist'),
 	browserSync = require("browser-sync").create(),
 	gulpsync = require('gulp-sync')(gulp);
 
-// 打包项目目录
-var __path = 'project_03/';
 
-// 上线静态资源路径
-var abspath = '';
-// var abspath = '//www.xxx.com/';
+var knownOptions = {
+	default: {
+		type: 'rjs',
+		path: 'project_01',
+		cdnpath: ''  //www.xxx.com/;
+	}
+};
+var options = minimist(process.argv.slice(1), knownOptions);
+
+// 打包项目目录和js处理方法静态资源
+var __path = options.path + '/';
+var __jstype = options.type;
+var abspath = options.cdnpath;
+
+console.log('--------------------\n打包'+options.path+'项目\n--------------------')
 
  //将类style-b47bb72002.css修改为style.css?v=b47bb72002
 function fixHash() {
@@ -126,16 +138,19 @@ gulp.task('devimg', function() {
 		.pipe(gulp.dest('src/'+__path+'images'))
 });
 
-// 脚本
-gulp.task('js', function () {
+// 脚本使用requirejs
+gulp.task('rjs', function () {
 	// js复制
 	gulp.src(['src/public/js/lib/require.js'])
 		.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest('dist/'+__path+'js'))
 
 	// js合并压缩
-	return gulp.src(['src/'+__path+'js/page/*.js', 'src/'+__path+'js/common/*.js'])
-		.pipe(isRequirejs())
+	return gulp.src(['src/'+__path+'js/page/*.js'])
+		.pipe(requirejsOptimize({
+	        optimize: 'none',
+	        mainConfigFile: 'src/public/js/common/config.js',
+	    }))
 		.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest('dist/'+__path+'js'))
 		.pipe(rev())
@@ -144,20 +159,17 @@ gulp.task('js', function () {
 		.pipe(gulp.dest('src/'+__path+'rev/js'))
 })
 
-// 如果是requrejs则合并依赖
-function isRequirejs() {
-    return through.obj(function (file, enc, cb) {
-        let str = file.contents.toString();
-        if(str.indexOf('require([') !== -1) {
-        	requirejsOptimize({
-		        optimize: 'none',
-		        mainConfigFile: 'src/public/js/common/config.js',
-		    })
-        }
-        return cb(null, file);
-    });
-}
-
+// 不使用requirejs
+gulp.task('js', function () {
+	// js合并压缩
+	return gulp.src(['src/'+__path+'js/page/*.js', 'src/'+__path+'js/common/*.js'])
+		.pipe(uglify({ mangle: false }))
+		.pipe(gulp.dest('dist/'+__path+'js'))
+		.pipe(rev())
+		.pipe(rev.manifest())
+		.pipe(fixHash())
+		.pipe(gulp.dest('src/'+__path+'rev/js'))
+})
 
 // 图片
 gulp.task('img', function() { 
@@ -237,4 +249,4 @@ gulp.task('dev', gulpsync.sync([['devscss', 'devcss', 'devimg'], 'watch']), func
 })
 
 // 生产环境
-gulp.task('build', gulpsync.sync(['clean', ['html', 'scss', 'css', 'js', 'img'], 'rev']))
+gulp.task('build', gulpsync.sync(['clean', ['html', 'scss', 'css', 'rjs', 'img'], 'rev']))
